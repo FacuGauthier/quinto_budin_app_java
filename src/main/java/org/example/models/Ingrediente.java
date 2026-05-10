@@ -27,7 +27,7 @@ public class Ingrediente {
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDateTime fechaCreacion;
 
-    @Column(name = "fecha_creacion", nullable = false)
+    @Column(name = "fecha_modificacion", nullable = false)
     private LocalDateTime fechaModificacion;
 
     public Ingrediente() {
