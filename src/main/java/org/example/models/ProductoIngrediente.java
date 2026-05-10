@@ -18,15 +18,15 @@ public class ProductoIngrediente {
     @JoinColumn(name = "ingrediente_id", nullable = false)
     private Ingrediente ingrediente;
 
-    @Column(nullable = false)
+    @Column(name = "cantidad_necesaria", nullable = false)
     private Integer cantidadNecesaria;
 
     public ProductoIngrediente() {
     }
-    public ProductoIngrediente(Producto producto, Ingrediente ingrediente, Integer cantidad_necesaria) {
+    public ProductoIngrediente(Producto producto, Ingrediente ingrediente, Integer cantidadNecesaria) {
         this.producto = producto;
         this.ingrediente = ingrediente;
-        this.cantidadNecesaria = cantidad_necesaria;
+        this.cantidadNecesaria = cantidadNecesaria;
     }
 
     public Long getId() {
