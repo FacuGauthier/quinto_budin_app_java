@@ -2,6 +2,8 @@ package org.example.models;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "clientes")
 public class Cliente {
@@ -19,12 +21,29 @@ public class Cliente {
     @Column(nullable = false, unique = true)
     private String telefono;
 
+    @Column(name = "fecha_creacion",nullable = false)
+    private LocalDateTime fechaCreacion;
+
+    @Column(name = "fecha_creacion",nullable = false)
+    private LocalDateTime fechaModificacion;
+
     public Cliente() {
     }
     public Cliente(String nombre, String apellido, String telefono) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.telefono = telefono;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.fechaCreacion = LocalDateTime.now();
+        this.fechaModificacion = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.fechaModificacion = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -50,5 +69,11 @@ public class Cliente {
     }
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+    public LocalDateTime getFechaModificacion() {
+        return fechaModificacion;
     }
 }
