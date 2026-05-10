@@ -19,14 +19,14 @@ public class ProductoIngrediente {
     private Ingrediente ingrediente;
 
     @Column(nullable = false)
-    private Integer cantidad_necesaria;
+    private Integer cantidadNecesaria;
 
     public ProductoIngrediente() {
     }
     public ProductoIngrediente(Producto producto, Ingrediente ingrediente, Integer cantidad_necesaria) {
         this.producto = producto;
         this.ingrediente = ingrediente;
-        this.cantidad_necesaria = cantidad_necesaria;
+        this.cantidadNecesaria = cantidad_necesaria;
     }
 
     public Long getId() {
@@ -47,10 +47,10 @@ public class ProductoIngrediente {
     public void setIngrediente(Ingrediente ingrediente) {
         this.ingrediente = ingrediente;
     }
-    public Integer getCantidad_necesaria() {
-        return cantidad_necesaria;
+    public Integer getCantidadNecesaria() {
+        return cantidadNecesaria;
     }
-    public void setCantidad_necesaria(Integer cantidad_necesaria) {
-        this.cantidad_necesaria = cantidad_necesaria;
+    public void setCantidadNecesaria(Integer cantidadNecesaria) {
+        this.cantidadNecesaria = cantidadNecesaria;
     }
 }
