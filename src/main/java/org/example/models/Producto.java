@@ -1,5 +1,12 @@
 package org.example.models;
 
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "productos")
 public class Producto {
 
     @Id
