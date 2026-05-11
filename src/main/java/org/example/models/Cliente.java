@@ -21,6 +21,9 @@ public class Cliente {
     @Column(nullable = false, unique = true)
     private String telefono;
 
+    @Column(nullable = false)
+    private boolean activo;
+
     @Column(name = "fecha_creacion",nullable = false)
     private LocalDateTime fechaCreacion;
 
@@ -29,10 +32,11 @@ public class Cliente {
 
     public Cliente() {
     }
-    public Cliente(String nombre, String apellido, String telefono) {
+    public Cliente(String nombre, String apellido, String telefono, boolean activo) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.telefono = telefono;
+        this.activo = activo;
     }
 
     @PrePersist
@@ -44,6 +48,10 @@ public class Cliente {
     @PreUpdate
     protected void onUpdate() {
         this.fechaModificacion = LocalDateTime.now();
+    }
+
+    public void marcarComoInactivo(){
+        this.activo = false;
     }
 
     public Long getId() {
@@ -69,6 +77,12 @@ public class Cliente {
     }
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+    public boolean isActivo() {
+        return activo;
+    }
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
     public LocalDateTime getFechaCreacion() {
         return fechaCreacion;

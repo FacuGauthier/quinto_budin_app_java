@@ -51,6 +51,10 @@ public class Producto {
         this.fechaModificacion = LocalDateTime.now();
     }
 
+    public void marcarComoInactivo(){
+        this.activo = false;
+    }
+
     public Long getId() {
         return id;
     }
