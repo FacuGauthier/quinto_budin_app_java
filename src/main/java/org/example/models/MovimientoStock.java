@@ -45,15 +45,12 @@ public class MovimientoStock {
         this.pedido = pedido;
         this.tipo = tipo;
         this.cantidad = cantidad;
-        this.fechaMovimiento = LocalDateTime.now();
     }
 
     @PrePersist
     protected void onCreate() {
         this.fechaCreacion = LocalDateTime.now();
-        if (this.fechaMovimiento == null) {
-            this.fechaMovimiento = LocalDateTime.now();
-        }
+        this.fechaMovimiento = LocalDateTime.now();
     }
 
     public Long getId() {
