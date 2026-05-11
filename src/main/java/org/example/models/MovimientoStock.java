@@ -2,7 +2,6 @@ package org.example.models;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,11 +17,11 @@ public class MovimientoStock {
     private Ingrediente ingrediente;
 
     @ManyToOne
-    @JoinColumn(name = "compra_id", nullable = false)
+    @JoinColumn(name = "compra_id")
     private Compra compra;
 
     @ManyToOne
-    @JoinColumn(name = "pedido_id", nullable = false)
+    @JoinColumn(name = "pedido_id")
     private Pedido pedido;
 
     @Enumerated(EnumType.STRING)
@@ -52,5 +51,51 @@ public class MovimientoStock {
     @PrePersist
     protected void onCreate() {
         this.fechaCreacion = LocalDateTime.now();
+        if (this.fechaMovimiento == null) {
+            this.fechaMovimiento = LocalDateTime.now();
+        }
+    }
+
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public Ingrediente getIngrediente() {
+        return ingrediente;
+    }
+    public void setIngrediente(Ingrediente ingrediente) {
+        this.ingrediente = ingrediente;
+    }
+    public Compra getCompra() {
+        return compra;
+    }
+    public void setCompra(Compra compra) {
+        this.compra = compra;
+    }
+    public Pedido getPedido() {
+        return pedido;
+    }
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
+    }
+    public Tipo getTipo() {
+        return tipo;
+    }
+    public void setTipo(Tipo tipo) {
+        this.tipo = tipo;
+    }
+    public Integer getCantidad() {
+        return cantidad;
+    }
+    public void setCantidad(Integer cantidad) {
+        this.cantidad = cantidad;
+    }
+    public LocalDateTime getFechaMovimiento() {
+        return fechaMovimiento;
+    }
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
     }
 }
