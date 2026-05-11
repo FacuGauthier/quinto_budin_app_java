@@ -54,6 +54,16 @@ public class Ingrediente {
         this.activo = false;
     }
 
+    public void sumarStock(Integer cantidad){
+        this.stockActual += cantidad;
+    }
+    public void restarStock(Integer cantidad){
+        if(this.stockActual - cantidad < 0){
+            throw new IllegalStateException("Stock insuficiente.");
+        }
+        this.stockActual -= cantidad;
+    }
+
     public Long getId() {
         return id;
     }
