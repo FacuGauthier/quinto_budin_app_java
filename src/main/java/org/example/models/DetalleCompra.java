@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "detalles_compra")
-public class DetallesCompra {
+public class DetalleCompra {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,9 +26,9 @@ public class DetallesCompra {
     @Column(name = "precio_unitario", nullable = false, precision = 10, scale = 2)
     private BigDecimal precioUnitario;
 
-    public DetallesCompra() {
+    public DetalleCompra() {
     }
-    public DetallesCompra(Compra compra, Ingrediente ingrediente, Integer cantidadComprada, BigDecimal precioUnitario) {
+    public DetalleCompra(Compra compra, Ingrediente ingrediente, Integer cantidadComprada, BigDecimal precioUnitario) {
         this.compra = compra;
         this.ingrediente = ingrediente;
         this.cantidadComprada = cantidadComprada;
