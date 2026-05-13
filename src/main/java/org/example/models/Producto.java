@@ -22,6 +22,12 @@ public class Producto {
     @Column(name = "tiempo_desarrollo",nullable = false)
     private Integer tiempoDesarrollo;
 
+    @Column(name = "costo_produccion", precision = 10, scale = 2)
+    private BigDecimal costoProduccion;
+
+    @Column(name = "margen_ganancia", precision = 5, scale = 2)
+    private BigDecimal margenGanancia;
+
     @Column(nullable = false)
     private boolean activo;
 
@@ -33,10 +39,12 @@ public class Producto {
 
     public Producto() {
     }
-    public Producto(String nombre, BigDecimal precioVenta, Integer tiempoDesarrollo, boolean activo) {
+    public Producto(String nombre, BigDecimal precioVenta, Integer tiempoDesarrollo, BigDecimal costoProduccion, BigDecimal margenGanancia, boolean activo) {
         this.nombre = nombre;
         this.precioVenta = precioVenta;
         this.tiempoDesarrollo = tiempoDesarrollo;
+        this.costoProduccion = costoProduccion;
+        this.margenGanancia = margenGanancia;
         this.activo = activo;
     }
 
@@ -78,6 +86,18 @@ public class Producto {
     }
     public void setTiempoDesarrollo(Integer tiempoDesarrollo) {
         this.tiempoDesarrollo = tiempoDesarrollo;
+    }
+    public BigDecimal getCostoProduccion() {
+        return costoProduccion;
+    }
+    public void setCostoProduccion(BigDecimal costoProduccion) {
+        this.costoProduccion = costoProduccion;
+    }
+    public BigDecimal getMargenGanancia() {
+        return margenGanancia;
+    }
+    public void setMargenGanancia(BigDecimal margenGanancia) {
+        this.margenGanancia = margenGanancia;
     }
     public boolean isActivo() {
         return activo;
