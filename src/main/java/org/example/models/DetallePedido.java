@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "detalles_pedido")
-public class DetallesPedido {
+@Table(name = "detalle_pedido")
+public class DetallePedido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,9 +26,9 @@ public class DetallesPedido {
     @Column(name = "precio_unitario", nullable = false, precision = 10, scale = 2)
     private BigDecimal precioUnitario;
 
-    public DetallesPedido() {
+    public DetallePedido() {
     }
-    public DetallesPedido(Pedido pedido, Producto producto, Integer cantidad, BigDecimal precioUnitario) {
+    public DetallePedido(Pedido pedido, Producto producto, Integer cantidad, BigDecimal precioUnitario) {
         this.pedido = pedido;
         this.producto = producto;
         this.cantidad = cantidad;
