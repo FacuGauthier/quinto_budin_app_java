@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     List<Pedido> findByEstado(String estado);
-    List<Pedido> findByFechaReciboBeetween(Date inicio, Date fin);
+    List<Pedido> findByFechaReciboBetween(Date inicio, Date fin);
 }
