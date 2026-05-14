@@ -1,7 +1,7 @@
 package org.example.repositories;
 
-import org.example.models.DetallesPedido;
+import org.example.models.DetallePedido;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DetallePedidoRepository extends JpaRepository<DetallesPedido, Long>{
+public interface DetallePedidoRepository extends JpaRepository<DetallePedido, Long>{
 }
