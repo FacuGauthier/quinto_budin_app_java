@@ -27,7 +27,7 @@ public class Pedido {
     @Column(nullable = false)
     private String direccion;
 
-    @Column(name = "precio_final", nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal subtotal;
 
     @Enumerated(EnumType.STRING)
