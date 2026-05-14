@@ -2,21 +2,27 @@ package org.example.services;
 
 import org.example.models.Producto;
 import org.example.models.ProductoIngrediente;
+import org.example.repositories.ProductoIngredienteRepository;
 import org.example.repositories.ProductoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
 public class ProductoService {
     private final ProductoRepository productoRepository;
     private final ProductoIngredienteRepository productoIngredienteRepository;
+    private final PricingService pricingService;
 
-    public ProductoService(ProductoRepository productoRepository, ProductoIngredienteRepository productoIngredienteRepository) {
+    public ProductoService(ProductoRepository productoRepository, ProductoIngredienteRepository productoIngredienteRepository, PricingService pricingService) {
         this.productoRepository = productoRepository;
         this.productoIngredienteRepository = productoIngredienteRepository;
+        this.pricingService = pricingService;
     }
 
+    @Transactional
     public Producto crearProductoConReceta(Producto producto, List<ProductoIngrediente> receta) {
         if(producto == null){
             throw new IllegalArgumentException("El producto no puede ser nulo.");
@@ -27,6 +33,7 @@ public class ProductoService {
         }
 
         producto.setId(null);
+        producto.setActivo(true);
         Producto prodGuardado = productoRepository.save(producto);
 
         for(ProductoIngrediente itemReceta : receta){
@@ -43,6 +50,103 @@ public class ProductoService {
             productoIngredienteRepository.save(itemReceta);
         }
 
-        return prodGuardado;
+        pricingService.recalcularPrecioProducto(prodGuardado);
+        return productoRepository.save(prodGuardado);
+    }
+
+    @Transactional
+    public Producto modificarProducto(Long id, Producto datosNuevos) {
+        if(id == null){
+            throw new IllegalArgumentException("El ID no puede ser nulo.");
+        }
+
+        if(datosNuevos == null){
+            throw new IllegalArgumentException("Los datos del producto no puede ser nulo.");
+        }
+
+        Producto producto = buscarPorId(id);
+        if(datosNuevos.getTiempoDesarrollo() <= 0){
+            throw new IllegalArgumentException("El tiempo de desarrollo debe ser mayor a cero.");
+        }
+
+        if(datosNuevos.getMargenGanancia().compareTo(BigDecimal.ZERO) < 0){
+            throw new IllegalArgumentException("El margen de ganancia no puede ser negativo.");
+        }
+
+        producto.setTiempoDesarrollo(datosNuevos.getTiempoDesarrollo());
+        producto.setMargenGanancia(datosNuevos.getMargenGanancia());
+        pricingService.recalcularPrecioProducto(producto);
+
+        return productoRepository.save(producto);
+    }
+
+    @Transactional
+    public Producto modificarReceta(Long id, List<ProductoIngrediente> nuevaReceta) {
+        if(id == null){
+            throw new IllegalArgumentException("El ID no puede ser nulo.");
+        }
+
+        if(nuevaReceta == null || nuevaReceta.isEmpty()){
+            throw new IllegalArgumentException("La nueva receta no puede estar vacia.");
+        }
+
+        Producto producto = buscarPorId(id);
+        productoIngredienteRepository.deleteByProductoId(id);
+        for(ProductoIngrediente itemReceta : nuevaReceta){
+            if(itemReceta == null) {
+                throw new IllegalArgumentException("La receta contiene elementos invalidos.");
+            }
+            if(itemReceta.getIngrediente() == null){
+                throw new IllegalArgumentException("Cada item debe contener un ingrediente.");
+            }
+            if(itemReceta.getCantidadNecesaria() <= 0){
+                throw new IllegalArgumentException("La cantidad debe ser mayor a cero.");
+            }
+
+            itemReceta.setProducto(producto);
+            productoIngredienteRepository.save(itemReceta);
+        }
+        pricingService.recalcularPrecioProducto(producto);
+
+        return productoRepository.save(producto);
+    }
+
+    @Transactional
+    public void bajaLogicaProducto(Long id) {
+        Producto producto = buscarPorId(id);
+
+        if(!producto.isActivo()){
+            throw new IllegalArgumentException("El producto ya se encuentra inactivo.");
+        }
+
+        producto.marcarComoInactivo();
+        productoRepository.save(producto);
+    }
+
+    @Transactional
+    public void reactivarProducto(Long id) {
+        Producto producto = buscarPorId(id);
+
+        if(producto.isActivo()){
+            throw new IllegalArgumentException("El producto ya se encuentra activo.");
+        }
+
+        producto.setActivo(true);
+        productoRepository.save(producto);
+    }
+
+    public Producto buscarPorId(Long id) {
+        if(id == null){
+            throw new IllegalArgumentException("El ID no puede ser nulo.");
+        }
+        return productoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Producto no encontrado."));
+    }
+
+    public List<Producto> obtenerProductosActivos() {
+        return productoRepository.findByActivoTrue();
+    }
+
+    public List<Producto> listarTodos() {
+        return productoRepository.findAll();
     }
 }
