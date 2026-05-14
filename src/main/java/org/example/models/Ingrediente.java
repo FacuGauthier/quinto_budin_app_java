@@ -2,6 +2,7 @@ package org.example.models;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,6 +22,12 @@ public class Ingrediente {
     @Column(name = "stock_actual", nullable = false)
     private Integer stockActual;
 
+    @Column(name = "unidad_medida", nullable = false)
+    private String unidadMedida;
+
+    @Column(name = "costo_unitario", nullable = false, precision = 10, scale = 2)
+    private BigDecimal costoUnitario;
+
     @Column(nullable = false)
     private boolean activo;
 
@@ -32,10 +39,12 @@ public class Ingrediente {
 
     public Ingrediente() {
     }
-    public Ingrediente(String nombre, String marca, Integer stockActual, boolean activo) {
+    public Ingrediente(String nombre, String marca, Integer stockActual, String unidadMedida, BigDecimal costoUnitario, boolean activo) {
         this.nombre = nombre;
         this.marca = marca;
         this.stockActual = stockActual;
+        this.unidadMedida = unidadMedida;
+        this.costoUnitario = costoUnitario;
         this.activo = activo;
     }
 
@@ -87,6 +96,18 @@ public class Ingrediente {
     }
     public void setStockActual(Integer stockActual) {
         this.stockActual = stockActual;
+    }
+    public String getUnidadMedida() {
+        return unidadMedida;
+    }
+    public void setUnidadMedida(String unidadMedida) {
+        this.unidadMedida = unidadMedida;
+    }
+    public BigDecimal getCostoUnitario() {
+        return costoUnitario;
+    }
+    public void setCostoUnitario(BigDecimal costoUnitario) {
+        this.costoUnitario = costoUnitario;
     }
     public boolean isActivo() {
         return activo;
