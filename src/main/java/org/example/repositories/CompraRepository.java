@@ -7,5 +7,5 @@ import java.util.Date;
 import java.util.List;
 
 public interface CompraRepository extends JpaRepository<Compra, Long> {
-    List<Compra> findByFechaReciboBetween(Date inicio, Date fin);
+    List<Compra> findByFechaCompraBetween(Date inicio, Date fin);
 }
