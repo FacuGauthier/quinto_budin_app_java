@@ -2,6 +2,8 @@ package org.example.models;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "producto_ingrediente")
 public class ProductoIngrediente {
@@ -18,12 +20,12 @@ public class ProductoIngrediente {
     @JoinColumn(name = "ingrediente_id", nullable = false)
     private Ingrediente ingrediente;
 
-    @Column(name = "cantidad_necesaria", nullable = false)
-    private Integer cantidadNecesaria;
+    @Column(name = "cantidad_necesaria", nullable = false, precision = 10, scale = 2)
+    private BigDecimal cantidadNecesaria;
 
     public ProductoIngrediente() {
     }
-    public ProductoIngrediente(Producto producto, Ingrediente ingrediente, Integer cantidadNecesaria) {
+    public ProductoIngrediente(Producto producto, Ingrediente ingrediente, BigDecimal cantidadNecesaria) {
         this.producto = producto;
         this.ingrediente = ingrediente;
         this.cantidadNecesaria = cantidadNecesaria;
@@ -47,10 +49,10 @@ public class ProductoIngrediente {
     public void setIngrediente(Ingrediente ingrediente) {
         this.ingrediente = ingrediente;
     }
-    public Integer getCantidadNecesaria() {
+    public BigDecimal getCantidadNecesaria() {
         return cantidadNecesaria;
     }
-    public void setCantidadNecesaria(Integer cantidadNecesaria) {
+    public void setCantidadNecesaria(BigDecimal cantidadNecesaria) {
         this.cantidadNecesaria = cantidadNecesaria;
     }
 }
