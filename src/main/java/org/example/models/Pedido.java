@@ -27,8 +27,8 @@ public class Pedido {
     @Column(nullable = false)
     private String direccion;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal subtotal;
+    @Column(name = "precio_final", nullable = false, precision = 10, scale = 2)
+    private BigDecimal precioFinal;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -47,7 +47,7 @@ public class Pedido {
         this.fechaRecibo = fecha_recibo;
         this.fechaEntrega = fecha_entrega;
         this.direccion = direccion;
-        this.subtotal = subtotal;
+        this.precioFinal = subtotal;
         this.estado = estado;
     }
 
@@ -92,11 +92,11 @@ public class Pedido {
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
-    public BigDecimal getSubtotal() {
-        return subtotal;
+    public BigDecimal getPrecioFinal() {
+        return precioFinal;
     }
-    public void setSubtotal(BigDecimal subtotal) {
-        this.subtotal = subtotal;
+    public void setPrecioFinal(BigDecimal precioFinal) {
+        this.precioFinal = precioFinal;
     }
     public Estado getEstado() {
         return estado;
