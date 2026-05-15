@@ -1,5 +1,5 @@
 package org.example.models;
 
 public enum Tipo {
-    COMPRA,AJUSTE,CONSUMO
+    COMPRA,AJUSTE,CONSUMO,REVERSION
 }
