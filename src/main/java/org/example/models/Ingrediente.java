@@ -19,8 +19,8 @@ public class Ingrediente {
     @Column(nullable = false)
     private String marca;
 
-    @Column(name = "stock_actual", nullable = false)
-    private Integer stockActual;
+    @Column(name = "stock_actual", nullable = false, precision = 10, scale = 2)
+    private BigDecimal stockActual;
 
     @Column(name = "unidad_medida", nullable = false)
     private String unidadMedida;
@@ -39,7 +39,7 @@ public class Ingrediente {
 
     public Ingrediente() {
     }
-    public Ingrediente(String nombre, String marca, Integer stockActual, String unidadMedida, BigDecimal costoUnitario, boolean activo) {
+    public Ingrediente(String nombre, String marca, BigDecimal stockActual, String unidadMedida, BigDecimal costoUnitario, boolean activo) {
         this.nombre = nombre;
         this.marca = marca;
         this.stockActual = stockActual;
@@ -63,14 +63,14 @@ public class Ingrediente {
         this.activo = false;
     }
 
-    public void sumarStock(Integer cantidad){
-        this.stockActual += cantidad;
+    public void sumarStock(BigDecimal cantidad){
+        this.stockActual = stockActual.add(cantidad);
     }
-    public void restarStock(Integer cantidad){
-        if(this.stockActual - cantidad < 0){
+    public void restarStock(BigDecimal cantidad){
+        if(this.stockActual.subtract(cantidad).compareTo(BigDecimal.ZERO) < 0){
             throw new IllegalStateException("Stock insuficiente.");
         }
-        this.stockActual -= cantidad;
+        this.stockActual = stockActual.subtract(cantidad);
     }
 
     public Long getId() {
@@ -91,10 +91,10 @@ public class Ingrediente {
     public void setMarca(String marca) {
         this.marca = marca;
     }
-    public Integer getStockActual() {
+    public BigDecimal getStockActual() {
         return stockActual;
     }
-    public void setStockActual(Integer stockActual) {
+    public void setStockActual(BigDecimal stockActual) {
         this.stockActual = stockActual;
     }
     public String getUnidadMedida() {
