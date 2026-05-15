@@ -31,6 +31,9 @@ public class MovimientoStock {
     @Column(nullable = false)
     private Integer cantidad;
 
+    @Column
+    private String motivo;
+
     @Column(name = "fecha_movimiento", nullable = false)
     private LocalDateTime fechaMovimiento;
 
@@ -39,12 +42,13 @@ public class MovimientoStock {
 
     public MovimientoStock() {
     }
-    public MovimientoStock(Ingrediente ingrediente, Compra compra, Pedido pedido, Tipo tipo, Integer cantidad) {
+    public MovimientoStock(Ingrediente ingrediente, Compra compra, Pedido pedido, Tipo tipo, Integer cantidad, String motivo) {
         this.ingrediente = ingrediente;
         this.compra = compra;
         this.pedido = pedido;
         this.tipo = tipo;
         this.cantidad = cantidad;
+        this.motivo = motivo;
     }
 
     @PrePersist
@@ -88,6 +92,12 @@ public class MovimientoStock {
     }
     public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
+    }
+    public String getMotivo() {
+        return motivo;
+    }
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
     }
     public LocalDateTime getFechaMovimiento() {
         return fechaMovimiento;
