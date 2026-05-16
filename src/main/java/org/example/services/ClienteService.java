@@ -32,9 +32,7 @@ public class ClienteService {
 
     @Transactional
     public Cliente modificarCliente(Long id, Cliente datosNuevos){
-        if(datosNuevos == null){
-            throw new IllegalArgumentException("Los datos del cliente no pueden ser nulos.");
-        }
+        validarCliente(datosNuevos);
 
         Cliente cliente = buscarPorId(id);
 
