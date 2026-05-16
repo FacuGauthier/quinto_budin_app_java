@@ -4,13 +4,11 @@ import org.example.models.DetallePedido;
 import org.example.models.Producto;
 import org.example.models.ProductoIngrediente;
 import org.example.repositories.ProductoIngredienteRepository;
-import org.example.repositories.ProductoRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.List;
 
@@ -18,11 +16,9 @@ import java.util.List;
 public class PricingService {
     @Value("${pricing.valor-minuto-trabajo:0.50}")
     private BigDecimal valorMinutoTrabajo;
-    private final ProductoRepository productoRepository;
     private final ProductoIngredienteRepository productoIngredienteRepository;
 
-    public PricingService(ProductoRepository productoRepository, ProductoIngredienteRepository productoIngredienteRepository) {
-        this.productoRepository = productoRepository;
+    public PricingService(ProductoIngredienteRepository productoIngredienteRepository) {
         this.productoIngredienteRepository = productoIngredienteRepository;
     }
 
