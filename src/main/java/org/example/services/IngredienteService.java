@@ -89,6 +89,7 @@ public class IngredienteService {
         return ingredienteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Ingrediente no encontrado."));
     }
 
+
     private void validarIngrediente(Ingrediente ingrediente) {
         if(ingrediente == null) {
             throw new IllegalArgumentException("El ingrediente no puede ser nulo.");
