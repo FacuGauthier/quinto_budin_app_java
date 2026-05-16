@@ -33,6 +33,10 @@ public class IngredienteService {
 
     @Transactional
     public Ingrediente modificarIngrediente(Long id, Ingrediente datosNuevos) {
+        if(id == null){
+            throw new IllegalArgumentException("El ID no puede ser nulo.");
+        }
+
         validarIngrediente(datosNuevos);
 
         Ingrediente ingrediente = buscarPorId(id);
