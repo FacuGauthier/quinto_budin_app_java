@@ -24,9 +24,7 @@ public class ProductoService {
 
     @Transactional
     public Producto crearProductoConReceta(Producto producto, List<ProductoIngrediente> receta) {
-        if(producto == null){
-            throw new IllegalArgumentException("El producto no puede ser nulo.");
-        }
+        validarDatosCreacion(producto);
 
         if(receta == null || receta.isEmpty()){
             throw new IllegalArgumentException("El receta debe contener al menos un ingrediente.");
@@ -60,18 +58,9 @@ public class ProductoService {
             throw new IllegalArgumentException("El ID no puede ser nulo.");
         }
 
-        if(datosNuevos == null){
-            throw new IllegalArgumentException("Los datos del producto no puede ser nulo.");
-        }
+        validarDatosConfigurables(datosNuevos);
 
         Producto producto = buscarPorId(id);
-        if(datosNuevos.getTiempoDesarrollo() <= 0){
-            throw new IllegalArgumentException("El tiempo de desarrollo debe ser mayor a cero.");
-        }
-
-        if(datosNuevos.getMargenGanancia().compareTo(BigDecimal.ZERO) < 0){
-            throw new IllegalArgumentException("El margen de ganancia no puede ser negativo.");
-        }
 
         producto.setTiempoDesarrollo(datosNuevos.getTiempoDesarrollo());
         producto.setMargenGanancia(datosNuevos.getMargenGanancia());
@@ -148,5 +137,38 @@ public class ProductoService {
 
     public List<Producto> listarTodos() {
         return productoRepository.findAll();
+    }
+
+
+    private void validarDatosCreacion(Producto producto) {
+        if(producto == null) {
+            throw new IllegalArgumentException("El producto no puede ser nulo.");
+        }
+
+        if(producto.getNombre() == null || producto.getNombre().isEmpty()) {
+            throw new IllegalArgumentException("El nombre es obligatorio.");
+        }
+
+        if(producto.getTiempoDesarrollo() <= 0) {
+            throw new IllegalArgumentException("El tiempo de desarrollo debe ser mayor a cero.");
+        }
+
+        if(producto.getMargenGanancia().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("El margen de ganancia no puede ser negativo.");
+        }
+    }
+
+    private void validarDatosConfigurables(Producto producto) {
+        if(producto == null) {
+            throw new IllegalArgumentException("El producto no puede ser nulo.");
+        }
+
+        if(producto.getTiempoDesarrollo() <= 0) {
+            throw new IllegalArgumentException("El tiempo debe ser mayor a cero.");
+        }
+
+        if(producto.getMargenGanancia().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("El margen ganancia no puede ser negativo.");
+        }
     }
 }
