@@ -43,7 +43,7 @@ public class ProductoService {
             if(itemReceta.getIngrediente() == null){
                 throw new IllegalArgumentException("Cada item debe contener un ingrediente.");
             }
-            if(itemReceta.getCantidadNecesaria() <= 0){
+            if(itemReceta.getCantidadNecesaria().compareTo(BigDecimal.ZERO) <= 0){
                 throw new IllegalArgumentException("La cantidad debe ser mayor a cero.");
             }
             itemReceta.setProducto(prodGuardado);
@@ -99,7 +99,7 @@ public class ProductoService {
             if(itemReceta.getIngrediente() == null){
                 throw new IllegalArgumentException("Cada item debe contener un ingrediente.");
             }
-            if(itemReceta.getCantidadNecesaria() <= 0){
+            if(itemReceta.getCantidadNecesaria().compareTo(BigDecimal.ZERO) <= 0){
                 throw new IllegalArgumentException("La cantidad debe ser mayor a cero.");
             }
 
