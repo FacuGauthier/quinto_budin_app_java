@@ -111,4 +111,34 @@ public class StockService {
 
         return errores;
     }
+
+    // public SugerenciaCompraDTO calcularSugerenciaDeCompra()
+
+    @Transactional
+    public void ejecutarAjusteManual(Long idIngrediente, BigDecimal cantidadAjuste, String motivo) {
+        if(idIngrediente == null) {
+            throw new IllegalArgumentException("El ID del ingrediente no puede ser nulo.");
+        }
+
+        if(cantidadAjuste == null || cantidadAjuste.compareTo(BigDecimal.ZERO) == 0) {
+            throw new IllegalArgumentException("La cantidad del ajuste no puede ser cero.");
+        }
+
+        if(motivo == null || motivo.isBlank()) {
+            throw new IllegalArgumentException("El motivo es obligatorio para ajustes.");
+        }
+
+        Ingrediente ingrediente = ingredienteRepository.findById(idIngrediente).orElseThrow(() -> new IllegalArgumentException("Ingrediente no encontrado."));
+
+        registrarMovimiento(ingrediente,Tipo.AJUSTE,cantidadAjuste,null,null,motivo);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MovimientoStock> obtenerHistorialPorIngrediente(Long idIngrediente) {
+        if(idIngrediente == null) {
+            throw new IllegalArgumentException("El ID del ingrediente no puede ser nulo.");
+        }
+
+        return movimientoStockRepository.findByIngredienteId(idIngrediente);
+    }
 }
