@@ -21,14 +21,14 @@ public class DetallePedido {
     private Producto producto;
 
     @Column(nullable = false)
-    private Integer cantidad;
+    private BigDecimal cantidad;
 
     @Column(name = "precio_unitario", nullable = false, precision = 10, scale = 2)
     private BigDecimal precioUnitario;
 
     public DetallePedido() {
     }
-    public DetallePedido(Pedido pedido, Producto producto, Integer cantidad, BigDecimal precioUnitario) {
+    public DetallePedido(Pedido pedido, Producto producto, BigDecimal cantidad, BigDecimal precioUnitario) {
         this.pedido = pedido;
         this.producto = producto;
         this.cantidad = cantidad;
@@ -53,10 +53,10 @@ public class DetallePedido {
     public void setProducto(Producto producto) {
         this.producto = producto;
     }
-    public Integer getCantidad() {
+    public BigDecimal getCantidad() {
         return cantidad;
     }
-    public void setCantidad(Integer cantidad) {
+    public void setCantidad(BigDecimal cantidad) {
         this.cantidad = cantidad;
     }
     public BigDecimal getPrecioUnitario() {
