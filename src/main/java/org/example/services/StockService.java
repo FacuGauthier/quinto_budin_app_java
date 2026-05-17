@@ -1,14 +1,13 @@
 package org.example.services;
 
+import org.example.dtos.SugerenciaCompraDTO;
 import org.example.models.*;
-import org.example.repositories.DetallePedidoRepository;
-import org.example.repositories.IngredienteRepository;
-import org.example.repositories.MovimientoStockRepository;
-import org.example.repositories.ProductoIngredienteRepository;
+import org.example.repositories.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,12 +17,14 @@ import java.util.Map;
 public class StockService {
     private final IngredienteRepository ingredienteRepository;
     private final MovimientoStockRepository movimientoStockRepository;
+    private final PedidoRepository pedidoRepository;
     private final DetallePedidoRepository detallePedidoRepository;
     private final ProductoIngredienteRepository productoIngredienteRepository;
 
-    public StockService(IngredienteRepository ingredienteRepository, MovimientoStockRepository movimientoStockRepository, DetallePedidoRepository detallePedidoRepository, ProductoIngredienteRepository productoIngredienteRepository) {
+    public StockService(IngredienteRepository ingredienteRepository, MovimientoStockRepository movimientoStockRepository, PedidoRepository pedidoRepository, DetallePedidoRepository detallePedidoRepository, ProductoIngredienteRepository productoIngredienteRepository) {
         this.ingredienteRepository = ingredienteRepository;
         this.movimientoStockRepository = movimientoStockRepository;
+        this.pedidoRepository = pedidoRepository;
         this.detallePedidoRepository = detallePedidoRepository;
         this.productoIngredienteRepository = productoIngredienteRepository;
     }
@@ -112,7 +113,46 @@ public class StockService {
         return errores;
     }
 
-    // public SugerenciaCompraDTO calcularSugerenciaDeCompra()
+    @Transactional(readOnly = true)
+    public SugerenciaCompraDTO calcularSugerenciaDeCompra() {
+        List<Pedido> pedidosPendientes = pedidoRepository.findByEstado(Estado.PENDIENTE);
+
+        Map<Ingrediente, BigDecimal> necesidades = new HashMap<>();
+
+        for(Pedido pedido : pedidosPendientes) {
+            for(DetallePedido  detallePedido : detallePedidoRepository.findByPedidoId(pedido.getId())) {
+                Producto producto = detallePedido.getProducto();
+                BigDecimal cantidadPedida = detallePedido.getCantidad();
+                List<ProductoIngrediente> receta = productoIngredienteRepository.findByProductoId(detallePedido.getProducto().getId());
+                for(ProductoIngrediente item : receta) {
+                    Ingrediente ingrediente = item.getIngrediente();
+                    BigDecimal consumo = item.getCantidadNecesaria().multiply(cantidadPedida);
+                    necesidades.merge(ingrediente, consumo, BigDecimal::add);
+                }
+            }
+        }
+
+        List<SugerenciaCompraDTO.ItemSugerenciaDTO> items = new ArrayList<>();
+
+        for(Map.Entry<Ingrediente, BigDecimal> entry : necesidades.entrySet()) {
+            Ingrediente ingrediente = entry.getKey();
+            BigDecimal cantidadNecesaria = entry.getValue();
+            BigDecimal stockActual = ingrediente.getStockActual();
+            if(cantidadNecesaria.compareTo(stockActual) > 0) {
+                BigDecimal cantidadAcomprar = cantidadNecesaria.subtract(stockActual);
+                items.add(new SugerenciaCompraDTO.ItemSugerenciaDTO(
+                        ingrediente.getId(),
+                        ingrediente.getNombre(),
+                        ingrediente.getUnidadMedida(),
+                        cantidadNecesaria,
+                        stockActual,
+                        cantidadAcomprar
+                ));
+            }
+        }
+
+        return new SugerenciaCompraDTO(LocalDate.now(), pedidosPendientes.size(), items);
+    }
 
     @Transactional
     public void ejecutarAjusteManual(Long idIngrediente, BigDecimal cantidadAjuste, String motivo) {
