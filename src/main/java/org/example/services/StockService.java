@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class StockService {
@@ -65,5 +69,46 @@ public class StockService {
         movimientoStockRepository.save(movimiento);
     }
 
+    @Transactional(readOnly = true)
+    public List<String> validarStockParaPedido(Pedido pedido) {
+        if(pedido == null) {
+            throw new IllegalArgumentException("El pedido no puede ser nulo.");
+        }
 
+        List<DetallePedido> detalles = detallePedidoRepository.findByPedidoId(pedido.getId());
+        Map<Ingrediente, BigDecimal> consumoNecesario = new HashMap<>();
+
+        for(DetallePedido detalle : detalles) {
+            Producto producto = detalle.getProducto();
+            BigDecimal cantidad = detalle.getCantidad();
+
+            List<ProductoIngrediente> receta = productoIngredienteRepository.findByProductoId(detalle.getProducto().getId());
+            for(ProductoIngrediente item : receta) {
+                Ingrediente ingrediente = item.getIngrediente();
+                BigDecimal cantidadReceta = item.getCantidadNecesaria();
+                BigDecimal consumoTotal = cantidadReceta.multiply(cantidad);
+                consumoNecesario.merge(ingrediente, consumoTotal, BigDecimal::add);
+            }
+        }
+
+        List<String> errores = new ArrayList<>();
+
+        for(Map.Entry<Ingrediente, BigDecimal> entry : consumoNecesario.entrySet()) {
+            Ingrediente ingrediente = entry.getKey();
+            BigDecimal necesario = entry.getValue();
+            BigDecimal disponible = ingrediente.getStockActual();
+
+            if(disponible.compareTo(necesario) < 0) {
+                BigDecimal faltante = necesario.subtract(disponible);
+                errores.add("Stock insuficiente de "
+                        + ingrediente.getNombre()
+                        + ". Faltan "
+                        + faltante
+                        + " "
+                        + ingrediente.getUnidadMedida());
+            }
+        }
+
+        return errores;
+    }
 }
