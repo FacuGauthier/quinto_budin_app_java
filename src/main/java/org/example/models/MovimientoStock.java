@@ -2,6 +2,7 @@ package org.example.models;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,7 +30,7 @@ public class MovimientoStock {
     private Tipo tipo;
 
     @Column(nullable = false)
-    private Integer cantidad;
+    private BigDecimal cantidad;
 
     @Column
     private String motivo;
@@ -42,7 +43,7 @@ public class MovimientoStock {
 
     public MovimientoStock() {
     }
-    public MovimientoStock(Ingrediente ingrediente, Compra compra, Pedido pedido, Tipo tipo, Integer cantidad, String motivo) {
+    public MovimientoStock(Ingrediente ingrediente, Compra compra, Pedido pedido, Tipo tipo, BigDecimal cantidad, String motivo) {
         this.ingrediente = ingrediente;
         this.compra = compra;
         this.pedido = pedido;
@@ -87,10 +88,10 @@ public class MovimientoStock {
     public void setTipo(Tipo tipo) {
         this.tipo = tipo;
     }
-    public Integer getCantidad() {
+    public BigDecimal getCantidad() {
         return cantidad;
     }
-    public void setCantidad(Integer cantidad) {
+    public void setCantidad(BigDecimal cantidad) {
         this.cantidad = cantidad;
     }
     public String getMotivo() {
