@@ -77,6 +77,7 @@ public class ClienteService {
         clienteRepository.save(cliente);
     }
 
+    @Transactional(readOnly = true)
     public Cliente buscarPorId(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("El ID no puede ser nulo.");
@@ -85,10 +86,12 @@ public class ClienteService {
         return clienteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado."));
     }
 
+    @Transactional(readOnly = true)
     public List<Cliente> obtenerClientesActivos(){
         return clienteRepository.findByActivoTrue();
     }
 
+    @Transactional(readOnly = true)
     public List<Cliente> listarTodos(){
         return clienteRepository.findAll();
     }
