@@ -77,14 +77,17 @@ public class IngredienteService {
         ingredienteRepository.save(ingrediente);
     }
 
+    @Transactional(readOnly = true)
     public List<Ingrediente> obtenerStockActual() {
         return ingredienteRepository.findByActivoTrue();
     }
 
+    @Transactional(readOnly = true)
     public List<Ingrediente> listarTodos() {
         return ingredienteRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Ingrediente buscarPorId(Long id) {
         if(id == null) {
             throw new IllegalArgumentException("El ID no puede ser nulo.");
