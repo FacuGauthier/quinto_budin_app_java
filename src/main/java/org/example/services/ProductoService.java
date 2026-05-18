@@ -124,6 +124,7 @@ public class ProductoService {
         productoRepository.save(producto);
     }
 
+    @Transactional(readOnly = true)
     public Producto buscarPorId(Long id) {
         if(id == null){
             throw new IllegalArgumentException("El ID no puede ser nulo.");
@@ -131,10 +132,12 @@ public class ProductoService {
         return productoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Producto no encontrado."));
     }
 
+    @Transactional(readOnly = true)
     public List<Producto> obtenerProductosActivos() {
         return productoRepository.findByActivoTrue();
     }
 
+    @Transactional(readOnly = true)
     public List<Producto> listarTodos() {
         return productoRepository.findAll();
     }
