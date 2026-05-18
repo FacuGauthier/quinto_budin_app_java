@@ -88,11 +88,11 @@ public class PricingService {
             throw new IllegalArgumentException("El precio unitario no esta definido.");
         }
 
-        if(detalle.getCantidad() <= 0) {
+        if(detalle.getCantidad().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("La cantidad no puede ser negativa.");
         }
 
-        return detalle.getPrecioUnitario().multiply(BigDecimal.valueOf(detalle.getCantidad()));
+        return detalle.getPrecioUnitario().multiply(detalle.getCantidad());
     }
 
     public BigDecimal calcularTotalPedido(List<DetallePedido> detalles) {
