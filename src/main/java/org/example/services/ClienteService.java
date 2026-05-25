@@ -41,7 +41,7 @@ public class ClienteService {
     }
 
     @Transactional
-    public Cliente modificarCliente(Long id, ClienteUpdateRequest clienteUpdateRequest) {
+    public ClienteResponse modificarCliente(Long id, ClienteUpdateRequest clienteUpdateRequest) {
         if(id == null){
             throw new IllegalArgumentException("El ID no puede ser nulo.");
         }
@@ -50,17 +50,18 @@ public class ClienteService {
 
         Cliente cliente = buscarPorId(id);
 
-        cliente.setNombre(datosNuevos.getNombre());
-        cliente.setApellido(datosNuevos.getApellido());
-        cliente.setTelefono(datosNuevos.getTelefono());
-        cliente.setActivo(datosNuevos.isActivo());
+        cliente.setId(id);
+        cliente.setActivo(clienteUpdateRequest.activo());
 
-        try{
-            return clienteRepository.save(cliente);
+        cliente.setNombre(clienteUpdateRequest.nombre());
+        cliente.setApellido(clienteUpdateRequest.apellido());
+        cliente.setTelefono(clienteUpdateRequest.telefono());
 
-        } catch (DataIntegrityViolationException e){
-            throw new IllegalArgumentException("No se pudo actualizar el cliente por un problema de integridad de datos.");
-        }
+        Cliente clienteUpdated = clienteRepository.save(cliente);
+
+        return new ClienteResponse(
+                clienteUpdated.getId(), clienteUpdated.getNombre(), clienteUpdated.getApellido(), clienteUpdated.getTelefono(), clienteUpdated.isActivo()
+        );
     }
 
     @Transactional
