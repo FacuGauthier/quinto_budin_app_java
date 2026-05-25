@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,9 +36,7 @@ public class ClienteService {
 
         Cliente clienteGuardado = clienteRepository.save(cliente);
 
-        return new ClienteResponse(
-                clienteGuardado.getId(), clienteGuardado.getNombre(), clienteGuardado.getApellido(), clienteGuardado.getTelefono(), clienteGuardado.isActivo()
-        );
+        return toResponse(clienteGuardado);
     }
 
     @Transactional
@@ -59,9 +58,7 @@ public class ClienteService {
 
         Cliente clienteUpdated = clienteRepository.save(cliente);
 
-        return new ClienteResponse(
-                clienteUpdated.getId(), clienteUpdated.getNombre(), clienteUpdated.getApellido(), clienteUpdated.getTelefono(), clienteUpdated.isActivo()
-        );
+        return toResponse(clienteUpdated);
     }
 
     @Transactional
@@ -75,9 +72,7 @@ public class ClienteService {
         cliente.marcarComoInactivo();
         Cliente clienteUpdated = clienteRepository.save(cliente);
 
-        return new ClienteResponse(
-                clienteUpdated.getId(), clienteUpdated.getNombre(), clienteUpdated.getApellido(), clienteUpdated.getTelefono(), clienteUpdated.isActivo()
-        );
+        return toResponse(clienteUpdated);
     }
 
     @Transactional
@@ -91,9 +86,7 @@ public class ClienteService {
         cliente.setActivo(true);
         Cliente clienteUpdated = clienteRepository.save(cliente);
 
-        return new ClienteResponse(
-                clienteUpdated.getId(), clienteUpdated.getNombre(), clienteUpdated.getApellido(), clienteUpdated.getTelefono(), clienteUpdated.isActivo()
-        );
+        return toResponse(clienteUpdated);
     }
 
     @Transactional(readOnly = true)
@@ -106,13 +99,17 @@ public class ClienteService {
     }
 
     @Transactional(readOnly = true)
-    public List<Cliente> obtenerClientesActivos(){
-        return clienteRepository.findByActivoTrue();
+    public List<ClienteResponse> obtenerClientesActivos(){
+        return clienteRepository.findByActivoTrue().stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<Cliente> listarTodos(){
-        return clienteRepository.findAll();
+    public List<ClienteResponse> listarTodos(){
+        return clienteRepository.findAll().stream()
+                .map(this::toResponse)
+                .toList();
     }
 
 
@@ -132,5 +129,14 @@ public class ClienteService {
         if (cliente.telefono() == null || cliente.telefono().isBlank()) {
             throw new IllegalArgumentException("El teléfono es obligatorio.");
         }
+    }
+    private ClienteResponse toResponse(Cliente cliente) {
+        return new ClienteResponse(
+                cliente.getId(),
+                cliente.getNombre(),
+                cliente.getApellido(),
+                cliente.getTelefono(),
+                cliente.isActivo()
+        );
     }
 }
