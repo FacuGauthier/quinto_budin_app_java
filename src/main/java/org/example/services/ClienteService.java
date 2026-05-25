@@ -1,5 +1,8 @@
 package org.example.services;
 
+import org.example.dtos.cliente.ClienteCreateRequest;
+import org.example.dtos.cliente.ClienteResponse;
+import org.example.dtos.cliente.ClienteUpdateRequest;
 import org.example.models.Cliente;
 import org.example.repositories.ClienteRepository;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -17,17 +20,23 @@ public class ClienteService {
     }
 
     @Transactional
-    public Cliente crearCliente(Cliente cliente) {
-        validarCliente(cliente);
+    public ClienteResponse crearCliente(ClienteCreateRequest clienteCreateRequest) {
+        validarClienteCreate(clienteCreateRequest);
 
-        try{
-            cliente.setId(null);
-            cliente.setActivo(true);
+        Cliente cliente = new Cliente();
 
-            return clienteRepository.save(cliente);
-        } catch (DataIntegrityViolationException e){
-            throw new IllegalArgumentException("No se pudo guardar el cliente por un problema de integridad de datos.");
-        }
+        cliente.setId(null);
+        cliente.setActivo(true);
+
+        cliente.setNombre(clienteCreateRequest.nombre());
+        cliente.setApellido(clienteCreateRequest.apellido());
+        cliente.setTelefono(clienteCreateRequest.telefono());
+
+        Cliente clienteGuardado = clienteRepository.save(cliente);
+
+        return new ClienteResponse(
+                clienteGuardado.getId(), clienteGuardado.getNombre(), clienteGuardado.getApellido(), clienteGuardado.getTelefono(), clienteGuardado.isActivo()
+        );
     }
 
     @Transactional
@@ -97,20 +106,20 @@ public class ClienteService {
     }
 
 
-    private void validarCliente(Cliente cliente) {
+    private void validarClienteCreate(ClienteCreateRequest cliente) {
         if (cliente == null) {
             throw new IllegalArgumentException("El cliente no puede ser nulo.");
         }
 
-        if (cliente.getNombre() == null || cliente.getNombre().isBlank()) {
+        if (cliente.nombre() == null || cliente.nombre().isBlank()) {
             throw new IllegalArgumentException("El nombre es obligatorio.");
         }
 
-        if (cliente.getApellido() == null || cliente.getApellido().isBlank()) {
+        if (cliente.apellido() == null || cliente.apellido().isBlank()) {
             throw new IllegalArgumentException("El apellido es obligatorio.");
         }
 
-        if (cliente.getTelefono() == null || cliente.getTelefono().isBlank()) {
+        if (cliente.telefono() == null || cliente.telefono().isBlank()) {
             throw new IllegalArgumentException("El teléfono es obligatorio.");
         }
     }
