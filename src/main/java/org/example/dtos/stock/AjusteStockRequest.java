@@ -1,4 +1,4 @@
-package org.example.dtos;
+package org.example.dtos.stock;
 
 import jakarta.validation.constraints.NotNull;
 
