@@ -4,6 +4,7 @@ public record ClienteResponseDTO(
         Long id,
         String nombre,
         String apellido,
-        String telefono
+        String telefono,
+        boolean activo
 ) {
 }
