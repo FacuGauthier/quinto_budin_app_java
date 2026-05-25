@@ -1,6 +1,6 @@
 package org.example.services;
 
-import org.example.dtos.ReporteGananciasDTO;
+import org.example.dtos.finanza.ReporteGananciasDTO;
 import org.example.models.Compra;
 import org.example.models.Estado;
 import org.example.models.Pedido;
