@@ -1,6 +1,6 @@
 package org.example.services;
 
-import org.example.dtos.SugerenciaCompraDTO;
+import org.example.dtos.stock.SugerenciaCompraDTO;
 import org.example.models.*;
 import org.example.repositories.*;
 import org.springframework.stereotype.Service;

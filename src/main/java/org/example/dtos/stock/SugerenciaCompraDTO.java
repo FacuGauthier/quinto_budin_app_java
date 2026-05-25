@@ -1,4 +1,4 @@
-package org.example.dtos;
+package org.example.dtos.stock;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
