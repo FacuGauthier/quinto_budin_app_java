@@ -1,4 +1,14 @@
 package org.example.dtos.producto;
 
-public record ProductoResponse() {
+import java.math.BigDecimal;
+import java.util.List;
+
+public record ProductoResponse(
+        Long id,
+        String nombre,
+        Integer tiempoDesarrollo,
+        BigDecimal margenGanancia,
+        boolean activo,
+        List<ProductoCreateRequest.ItemRecetaRequest> items
+) {
 }

@@ -1,4 +1,8 @@
 package org.example.dtos.producto;
 
-public record RecetaUpdateRequest() {
+import java.util.List;
+
+public record RecetaUpdateRequest(
+        List<ProductoCreateRequest.ItemRecetaRequest> itemRecetas
+) {
 }

@@ -1,4 +1,10 @@
 package org.example.dtos.producto;
 
-public record ProductoUpdateRequest() {
+import java.math.BigDecimal;
+
+public record ProductoUpdateRequest(
+        String nombre,
+        Integer tiempoDesarrollo,
+        BigDecimal margenGanacia
+) {
 }
