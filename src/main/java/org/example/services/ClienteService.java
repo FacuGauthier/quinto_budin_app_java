@@ -65,7 +65,7 @@ public class ClienteService {
     }
 
     @Transactional
-    public void bajaLogicaCliente(Long id){
+    public ClienteResponse bajaLogicaCliente(Long id){
         Cliente cliente = buscarPorId(id);
 
         if(!cliente.isActivo()){
@@ -73,11 +73,15 @@ public class ClienteService {
         }
 
         cliente.marcarComoInactivo();
-        clienteRepository.save(cliente);
+        Cliente clienteUpdated = clienteRepository.save(cliente);
+
+        return new ClienteResponse(
+                clienteUpdated.getId(), clienteUpdated.getNombre(), clienteUpdated.getApellido(), clienteUpdated.getTelefono(), clienteUpdated.isActivo()
+        );
     }
 
     @Transactional
-    public void reactivarCliente(Long id){
+    public ClienteResponse reactivarCliente(Long id){
         Cliente cliente = buscarPorId(id);
 
         if(cliente.isActivo()){
@@ -85,7 +89,11 @@ public class ClienteService {
         }
 
         cliente.setActivo(true);
-        clienteRepository.save(cliente);
+        Cliente clienteUpdated = clienteRepository.save(cliente);
+
+        return new ClienteResponse(
+                clienteUpdated.getId(), clienteUpdated.getNombre(), clienteUpdated.getApellido(), clienteUpdated.getTelefono(), clienteUpdated.isActivo()
+        );
     }
 
     @Transactional(readOnly = true)
