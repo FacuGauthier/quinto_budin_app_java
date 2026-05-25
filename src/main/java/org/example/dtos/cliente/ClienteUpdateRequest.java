@@ -1,6 +1,6 @@
 package org.example.dtos.cliente;
 
-public record ClienteCreateRequestDTO(
+public record ClienteUpdateRequest(
         String nombre,
         String apellido,
         String telefono
