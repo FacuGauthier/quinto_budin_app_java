@@ -1,4 +1,4 @@
-package org.example.dtos;
+package org.example.dtos.cliente;
 
 public record ClienteCreateRequestDTO(
         String nombre,
