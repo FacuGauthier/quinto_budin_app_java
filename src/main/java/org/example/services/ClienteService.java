@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.dtos.cliente.ClienteCreateRequest;
+import org.example.dtos.cliente.ClienteRequest;
 import org.example.dtos.cliente.ClienteResponse;
 import org.example.dtos.cliente.ClienteUpdateRequest;
 import org.example.models.Cliente;
@@ -21,7 +22,7 @@ public class ClienteService {
 
     @Transactional
     public ClienteResponse crearCliente(ClienteCreateRequest clienteCreateRequest) {
-        validarClienteCreate(clienteCreateRequest);
+        validarCliente(clienteCreateRequest);
 
         Cliente cliente = new Cliente();
 
@@ -40,12 +41,12 @@ public class ClienteService {
     }
 
     @Transactional
-    public Cliente modificarCliente(Long id, Cliente datosNuevos){
+    public Cliente modificarCliente(Long id, ClienteUpdateRequest clienteUpdateRequest) {
         if(id == null){
             throw new IllegalArgumentException("El ID no puede ser nulo.");
         }
 
-        validarCliente(datosNuevos);
+        validarCliente(clienteUpdateRequest);
 
         Cliente cliente = buscarPorId(id);
 
@@ -106,7 +107,7 @@ public class ClienteService {
     }
 
 
-    private void validarClienteCreate(ClienteCreateRequest cliente) {
+    private void validarCliente(ClienteRequest cliente) {
         if (cliente == null) {
             throw new IllegalArgumentException("El cliente no puede ser nulo.");
         }
