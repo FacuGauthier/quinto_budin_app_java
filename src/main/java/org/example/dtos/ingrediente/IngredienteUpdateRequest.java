@@ -8,5 +8,5 @@ public record IngredienteUpdateRequest(
         BigDecimal stockActual,
         String unidadMedida,
         BigDecimal costoUnitario
-) {
+) implements IngredienteRequest {
 }
