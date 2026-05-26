@@ -6,11 +6,9 @@ import org.example.dtos.cliente.ClienteResponse;
 import org.example.dtos.cliente.ClienteUpdateRequest;
 import org.example.models.Cliente;
 import org.example.repositories.ClienteRepository;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
