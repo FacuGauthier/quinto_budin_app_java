@@ -1,10 +1,14 @@
 package org.example.services;
 
+import org.example.dtos.compra.CompraCreateRequest;
+import org.example.dtos.compra.CompraResponse;
 import org.example.models.Compra;
 import org.example.models.DetalleCompra;
+import org.example.models.Ingrediente;
 import org.example.models.Tipo;
 import org.example.repositories.CompraRepository;
 import org.example.repositories.DetalleCompraRepository;
+import org.example.repositories.IngredienteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,24 +21,29 @@ public class CompraService {
     private final CompraRepository compraRepository;
     private final DetalleCompraRepository detalleCompraRepository;
     private final StockService stockService;
+    private final IngredienteRepository ingredienteRepository;
 
-    public CompraService(CompraRepository compraRepository,  DetalleCompraRepository detalleCompraRepository, StockService stockService) {
+    public CompraService(CompraRepository compraRepository,  DetalleCompraRepository detalleCompraRepository, StockService stockService,  IngredienteRepository ingredienteRepository) {
         this.compraRepository = compraRepository;
         this.detalleCompraRepository = detalleCompraRepository;
         this.stockService = stockService;
+        this.ingredienteRepository = ingredienteRepository;
     }
 
     @Transactional
-    public Compra registrarCompra(Compra compra, List<DetalleCompra> detalles) {
-        validarCompra(compra, detalles);
+    public CompraResponse registrarCompra(CompraCreateRequest request) {
+        validarCompra(request);
+
+        Compra compra = new Compra();
 
         compra.setId(null);
+        compra.setFechaCompra(request.fechaCompra());
 
         BigDecimal costoTotal =  BigDecimal.ZERO;
 
-        for(DetalleCompra detalle : detalles) {
-            validarDetalleCompra(detalle);
-            BigDecimal subtotal = detalle.getCantidadComprada().multiply(detalle.getPrecioUnitario());
+        for(CompraCreateRequest.DetalleCompraRequest detalleRequest : request.detalles()) {
+            validarDetalleCompra(detalleRequest);
+            BigDecimal subtotal = detalleRequest.cantidadComprada().multiply(detalleRequest.precioUnitario());
             costoTotal = costoTotal.add(subtotal);
         }
 
@@ -42,9 +51,18 @@ public class CompraService {
 
         Compra compraGuardada = compraRepository.save(compra);
 
-        for(DetalleCompra detalle : detalles) {
-            detalle.setCompra(compraGuardada);
+        for(CompraCreateRequest.DetalleCompraRequest detalleRequest : request.detalles()) {
+            Ingrediente ingrediente = ingredienteRepository.findById(detalleRequest.idIngrediente()).orElseThrow(() -> new IllegalArgumentException("Ingrediente no encontrado"));
+
+            DetalleCompra detalle = new DetalleCompra();
+
+            detalle.setCompra(compra);
+            detalle.setIngrediente(ingrediente);
+            detalle.setCantidadComprada(detalleRequest.cantidadComprada());
+            detalle.setPrecioUnitario(detalleRequest.precioUnitario());
+
             detalleCompraRepository.save(detalle);
+
             stockService.registrarMovimiento(
                     detalle.getIngrediente(),
                     Tipo.COMPRA,
@@ -52,7 +70,7 @@ public class CompraService {
                     compraGuardada, null,null);
         }
 
-        return compraGuardada;
+        return toResponseCompra(compraGuardada, request.detalles());
     }
 
     @Transactional(readOnly = true)
@@ -74,15 +92,45 @@ public class CompraService {
     }
 
 
-    private void validarCompra(Compra compra, List<DetalleCompra> detalles) {
-        if(compra == null) throw new IllegalArgumentException("La compra no puede ser nula.");
-        if(detalles == null || detalles.isEmpty()) throw new IllegalArgumentException("La compra debe tener al menos un detalle.");
-        if(compra.getFechaCompra() == null) throw new IllegalArgumentException("La fecha de compra no puede ser nula.");
+    private void validarCompra(CompraCreateRequest request) {
+        if (request == null) {
+            throw new IllegalArgumentException("La compra no puede ser nula.");
+        }
+
+        if (request.detalles() == null || request.detalles().isEmpty()) {
+            throw new IllegalArgumentException("La compra debe tener al menos un detalle.");
+        }
+
+        if (request.fechaCompra() == null) {
+            throw new IllegalArgumentException("La fecha de compra no puede ser nula.");
+        }
     }
-    private void validarDetalleCompra(DetalleCompra detalle) {
-        if(detalle == null) throw new IllegalArgumentException("El detalle de compra no puede ser nulo.");
-        if(detalle.getIngrediente() == null) throw new IllegalArgumentException("El ingrediente no puede ser nulo.");
-        if(detalle.getCantidadComprada() == null || detalle.getCantidadComprada().compareTo(BigDecimal.ZERO) < 0) throw new IllegalArgumentException("La cantidad comprada debe ser mayora a cero.");
-        if(detalle.getPrecioUnitario() == null || detalle.getPrecioUnitario().compareTo(BigDecimal.ZERO) < 0) throw new IllegalArgumentException("El precio unitario debe ser mayora a cero.");
+    private void validarDetalleCompra(CompraCreateRequest.DetalleCompraRequest detalle) {
+        if (detalle == null) {
+            throw new IllegalArgumentException("El detalle de compra no puede ser nulo.");
+        }
+
+        if (detalle.idIngrediente() == null) {
+            throw new IllegalArgumentException("El ingrediente no puede ser nulo.");
+        }
+
+        if (detalle.cantidadComprada() == null
+                || detalle.cantidadComprada().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("La cantidad comprada debe ser mayor a cero.");
+        }
+
+        if (detalle.precioUnitario() == null
+                || detalle.precioUnitario().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("El precio unitario debe ser mayor a cero.");
+        }
+    }
+
+    private CompraResponse toResponseCompra (Compra compra, List<CompraCreateRequest.DetalleCompraRequest> detalles) {
+
+        return new CompraResponse(
+                compra.getId(),
+                compra.getFechaCompra(),
+                detalles
+        );
     }
 }
