@@ -74,13 +74,17 @@ public class CompraService {
     }
 
     @Transactional(readOnly = true)
-    public List<Compra> verHistorialDeCompras() {
-        return compraRepository.findAll();
+    public List<CompraResponse> verHistorialDeCompras() {
+        return compraRepository.findAll().stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<Compra> verHistorialEntreFechas(LocalDate inicio, LocalDate fin) {
-        return compraRepository.findByFechaCompraBetween(inicio, fin);
+    public List<CompraResponse> verHistorialEntreFechas(LocalDate inicio, LocalDate fin) {
+        return compraRepository.findByFechaCompraBetween(inicio, fin).stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -126,6 +130,23 @@ public class CompraService {
     }
 
     private CompraResponse toResponseCompra (Compra compra, List<CompraCreateRequest.DetalleCompraRequest> detalles) {
+
+        return new CompraResponse(
+                compra.getId(),
+                compra.getFechaCompra(),
+                detalles
+        );
+    }
+    private CompraResponse toResponse(Compra compra) {
+        List<CompraCreateRequest.DetalleCompraRequest> detalles =
+                detalleCompraRepository.findByCompra(compra)
+                        .stream()
+                        .map(detalle -> new CompraCreateRequest.DetalleCompraRequest(
+                                detalle.getIngrediente().getId(),
+                                detalle.getCantidadComprada(),
+                                detalle.getPrecioUnitario()
+                        ))
+                        .toList();
 
         return new CompraResponse(
                 compra.getId(),
